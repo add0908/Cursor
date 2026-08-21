@@ -1,14 +1,19 @@
-# EV Comparison — Zeekr 7X · BYD Sealion 7 · BMW iX1
+# EV Comparison — Zeekr 7X · BYD Sealion 7 · Tesla Model Y · Mercedes EQA · BMW iX1 · Audi Q6 e-tron
 
-A single-page, side-by-side comparison of five electric SUVs:
+A single-page, side-by-side comparison of ten electric SUVs:
 
 | Brand | Model | Trim |
 | ----- | ----- | ---- |
 | Zeekr | 7X | RWD (base) |
+| Zeekr | 7X | Long Range RWD |
 | Zeekr | 7X | Performance AWD |
 | BYD | Sealion 7 | Premium (base) |
 | BYD | Sealion 7 | Performance AWD |
+| Tesla | Model Y | RWD |
+| Tesla | Model Y | Long Range AWD |
+| Mercedes-Benz | EQA 250+ | FWD |
 | BMW | iX1 | xDrive30 |
+| Audi | Q6 e-tron | quattro |
 
 The page compares **specs, features and indicative pricing** across pricing,
 performance, battery/range/charging, dimensions/practicality and
@@ -29,7 +34,22 @@ python3 -m http.server 8000
 - `index.html` — page structure
 - `styles.css` — styling (dark, responsive)
 - `app.js` — renders the cards and comparison table from the dataset
-- `data.js` — the vehicle dataset (`VEHICLES`, `SPEC_GROUPS`)
+- `data.js` — the vehicle dataset (`VEHICLES`, `SPEC_GROUPS`) — **edit here**
+- `build.js` — inlines the CSS/JS into a single self-contained file
+- `ev-comparison.html` — generated single-file version (open directly, works offline)
+
+## Single-file version
+
+`ev-comparison.html` bundles the CSS, data and JavaScript into one file with no
+dependencies — handy for opening directly (double-click) or sharing. It is
+**generated**, so don't edit it by hand. After changing any source file, run:
+
+```bash
+node build.js
+```
+
+This regenerates `ev-comparison.html` from `index.html` + `styles.css` +
+`data.js` + `app.js`, so the multi-file and single-file versions stay in sync.
 
 ## Features
 
