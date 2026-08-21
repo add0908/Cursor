@@ -36,7 +36,7 @@ body {
 }
 
 .wrap {
-  width: min(1640px, 95vw);
+  width: min(2400px, 97vw);
   margin: 0 auto;
 }
 
@@ -252,8 +252,9 @@ body {
 
 table.compare {
   border-collapse: collapse;
+  table-layout: fixed;
   width: 100%;
-  min-width: 900px;
+  min-width: 1040px;
   font-size: 0.82rem;
 }
 
@@ -263,6 +264,8 @@ table.compare td {
   text-align: left;
   border-bottom: 1px solid var(--border);
   vertical-align: middle;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 table.compare thead th {
@@ -274,7 +277,7 @@ table.compare thead th {
 }
 
 .col-head {
-  min-width: 86px;
+  min-width: 0;
 }
 
 .col-head .ch-brand {
@@ -313,7 +316,8 @@ td.row-label {
   background: var(--surface-2);
   font-weight: 500;
   color: var(--text-dim);
-  min-width: 132px;
+  width: 148px;
+  min-width: 148px;
 }
 
 thead th.row-label {
