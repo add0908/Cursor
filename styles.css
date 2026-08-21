@@ -351,14 +351,6 @@ td.val .unit {
   margin-left: 3px;
 }
 
-/* winner highlight (toggled) */
-body.show-diff td.win {
-  background: var(--win-bg);
-  color: var(--win-text);
-  font-weight: 700;
-  box-shadow: inset 3px 0 0 var(--win-border);
-}
-
 /* Notes */
 .notes {
   margin: 40px 0 20px;

@@ -21,19 +21,6 @@
     return String(value);
   }
 
-  // Determine which vehicles "win" a numeric row for highlighting.
-  function winnersFor(row) {
-    if (!row.better) return new Set();
-    const entries = VEHICLES.map((v) => [v.id, v.specs[row.key]]).filter(
-      ([, val]) => typeof val === "number"
-    );
-    if (entries.length < 2) return new Set();
-    const values = entries.map(([, val]) => val);
-    const target = row.better === "high" ? Math.max(...values) : Math.min(...values);
-    // A frunk/boot of 0 shouldn't "win" a "high" comparison trivially; still fine.
-    return new Set(entries.filter(([, val]) => val === target).map(([id]) => id));
-  }
-
   function rowValuesDiffer(row) {
     const vals = VEHICLES.map((v) => v.specs[row.key]);
     return new Set(vals.map((v) => String(v))).size > 1;
@@ -107,7 +94,6 @@
       body.appendChild(groupTr);
 
       visibleRows.forEach((row) => {
-        const winners = winnersFor(row);
         const tr = document.createElement("tr");
         const label = document.createElement("td");
         label.className = "row-label";
@@ -117,7 +103,6 @@
         VEHICLES.forEach((v) => {
           const td = document.createElement("td");
           td.className = "val";
-          if (winners.has(v.id)) td.classList.add("win");
           td.innerHTML = formatValue(v.specs[row.key], row);
           tr.appendChild(td);
         });
@@ -131,11 +116,6 @@
     renderCards();
     renderTableHead();
     renderTableBody();
-
-    const diffToggle = document.getElementById("toggle-diff");
-    diffToggle.addEventListener("change", () => {
-      document.body.classList.toggle("show-diff", diffToggle.checked);
-    });
 
     document
       .getElementById("toggle-onlydiff")
