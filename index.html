@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EV Comparison · Zeekr 7X vs BYD Sealion 7 vs BMW iX1</title>
+    <meta
+      name="description"
+      content="Side-by-side comparison of the Zeekr 7X (base & Performance), BYD Sealion 7 (base & Performance) and BMW iX1 xDrive30 — specs, features and pricing."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <p class="eyebrow">Electric SUV shoot-out</p>
+        <h1>Zeekr 7X · BYD Sealion 7 · BMW iX1</h1>
+        <p class="lede">
+          A side-by-side look at five electric SUVs — the Zeekr 7X in base and
+          Performance guise, the BYD Sealion 7 in base and Performance guise, and
+          the BMW iX1 xDrive30. Specs, features and indicative pricing at a glance.
+        </p>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section class="controls" aria-label="Comparison controls">
+        <div class="control-group">
+          <label class="switch">
+            <input type="checkbox" id="toggle-diff" />
+            <span>Highlight best values</span>
+          </label>
+          <label class="switch">
+            <input type="checkbox" id="toggle-onlydiff" />
+            <span>Only show rows that differ</span>
+          </label>
+        </div>
+        <p class="disclaimer" id="currency-note"></p>
+      </section>
+
+      <section class="cards" id="vehicle-cards" aria-label="Vehicles"></section>
+
+      <section class="table-wrap" aria-label="Detailed comparison">
+        <table class="compare" id="compare-table">
+          <thead id="compare-head"></thead>
+          <tbody id="compare-body"></tbody>
+        </table>
+      </section>
+
+      <section class="notes">
+        <h2>Notes &amp; sources</h2>
+        <ul>
+          <li>
+            Figures are manufacturer / WLTP claims collated from public sources
+            (manufacturer sites, EV-Database, EVKX, zecar) as of mid-2025.
+          </li>
+          <li>
+            Prices are indicative Australian RRP (before on-road costs) shown so
+            all five models can be compared like-for-like. Local pricing, range,
+            trim names and standard equipment differ by market.
+          </li>
+          <li>
+            "Best value" highlighting is a simple per-row heuristic (higher power
+            / range is better, lower price / 0–100 time is better) and is not an
+            overall recommendation.
+          </li>
+          <li>Always confirm current specs and pricing with the manufacturer before purchase.</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <p>Built as a static comparison page — no tracking, no dependencies.</p>
+      </div>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
