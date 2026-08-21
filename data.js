@@ -33,7 +33,7 @@ const SPEC_GROUPS = [
       { key: "torque", label: "Peak torque", unit: "Nm", better: "high" },
       { key: "accel", label: "0–100 km/h", unit: "s", better: "low" },
       { key: "topSpeed", label: "Top speed", unit: "km/h", better: "high" },
-      { key: "drive", label: "Drivetrain", better: null },
+      { key: "drive", label: "Drivetrain", better: null, hl: "drive" },
     ],
   },
   {
@@ -70,8 +70,8 @@ const SPEC_GROUPS = [
   {
     title: "Chassis & Suspension",
     rows: [
-      { key: "suspensionFront", label: "Front suspension", better: null },
-      { key: "suspensionRear", label: "Rear suspension", better: null },
+      { key: "suspensionFront", label: "Front suspension", better: null, hl: "suspension" },
+      { key: "suspensionRear", label: "Rear suspension", better: null, hl: "suspension" },
       { key: "adaptiveDamping", label: "Adaptive damping", better: null, hl: "feature" },
       { key: "airSuspension", label: "Air suspension", better: null, hl: "feature" },
     ],
@@ -79,22 +79,22 @@ const SPEC_GROUPS = [
   {
     title: "Comfort & Interior",
     rows: [
-      { key: "seatMaterial", label: "Seat material", better: null },
-      { key: "seatComfort", label: "Front seats (heat/vent/massage)", better: null },
+      { key: "seatMaterial", label: "Seat material", better: null, hl: "material" },
+      { key: "seatComfort", label: "Front seats (heat/vent/massage)", better: null, hl: "comfort" },
       { key: "rearSeatHeat", label: "Rear seat heating", better: null, hl: "feature" },
       { key: "rearSeatVent", label: "Rear seat ventilation", better: null, hl: "feature" },
       { key: "steeringHeat", label: "Heated steering wheel", better: null, hl: "feature" },
       { key: "wirelessCharge", label: "Wireless phone charging", better: null, hl: "feature" },
-      { key: "doorHandles", label: "Door handles", better: null },
+      { key: "doorHandles", label: "Door handles", better: null, hl: "handles" },
       { key: "ambient", label: "Ambient lighting", better: null, hl: "feature" },
-      { key: "roof", label: "Roof", better: null },
+      { key: "roof", label: "Roof", better: null, hl: "roof" },
     ],
   },
   {
     title: "Infotainment",
     rows: [
       { key: "display", label: "Central display", better: null, hl: "num" },
-      { key: "cluster", label: "Driver display", better: null },
+      { key: "cluster", label: "Driver display", better: null, hl: "num" },
       { key: "headUp", label: "Head-up display", better: null, hl: "feature" },
       { key: "audio", label: "Audio system", better: null, hl: "num" },
     ],
@@ -118,7 +118,7 @@ const SPEC_GROUPS = [
     title: "Ownership",
     rows: [
       { key: "warranty", label: "Vehicle warranty", better: null, hl: "num" },
-      { key: "batteryWarranty", label: "Battery warranty", better: null, hl: "num" },
+      { key: "batteryWarranty", label: "Battery warranty", better: null, hl: "maxnum" },
     ],
   },
 ];
