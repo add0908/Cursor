@@ -39,6 +39,10 @@
       <section class="controls" aria-label="Comparison controls">
         <div class="control-group">
           <label class="switch">
+            <input type="checkbox" id="toggle-diff" checked />
+            <span>Highlight best values</span>
+          </label>
+          <label class="switch">
             <input type="checkbox" id="toggle-onlydiff" />
             <span>Only show rows that differ</span>
           </label>
@@ -66,6 +70,15 @@
             Prices are indicative Australian RRP (before on-road costs) shown so
             all models can be compared like-for-like. Local pricing, range,
             trim names and standard equipment differ by market.
+          </li>
+          <li>
+            "Highlight best values" flags the strongest value in each row: for
+            numbers, higher power/range/etc. or lower price/0–100 time wins; for
+            features, "Standard/Yes" beats "Optional" beats "No", and larger
+            counts (speakers, screens) win. It's a rough per-row heuristic, not
+            an overall recommendation. Purely descriptive rows with no objective
+            "best" (e.g. suspension type, seat material, door handles) aren't
+            highlighted.
           </li>
           <li>
             Comfort, safety and assistance features that are trim- or

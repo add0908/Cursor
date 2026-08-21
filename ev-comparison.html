@@ -372,6 +372,14 @@ td.val .unit {
   margin-left: 3px;
 }
 
+/* winner highlight (toggled) */
+body.show-diff td.win {
+  background: var(--win-bg);
+  color: var(--win-text);
+  font-weight: 700;
+  box-shadow: inset 3px 0 0 var(--win-border);
+}
+
 /* Notes */
 .notes {
   margin: 40px 0 20px;
@@ -441,6 +449,10 @@ td.val .unit {
       <section class="controls" aria-label="Comparison controls">
         <div class="control-group">
           <label class="switch">
+            <input type="checkbox" id="toggle-diff" checked />
+            <span>Highlight best values</span>
+          </label>
+          <label class="switch">
             <input type="checkbox" id="toggle-onlydiff" />
             <span>Only show rows that differ</span>
           </label>
@@ -468,6 +480,15 @@ td.val .unit {
             Prices are indicative Australian RRP (before on-road costs) shown so
             all models can be compared like-for-like. Local pricing, range,
             trim names and standard equipment differ by market.
+          </li>
+          <li>
+            "Highlight best values" flags the strongest value in each row: for
+            numbers, higher power/range/etc. or lower price/0–100 time wins; for
+            features, "Standard/Yes" beats "Optional" beats "No", and larger
+            counts (speakers, screens) win. It's a rough per-row heuristic, not
+            an overall recommendation. Purely descriptive rows with no objective
+            "best" (e.g. suspension type, seat material, door handles) aren't
+            highlighted.
           </li>
           <li>
             Comfort, safety and assistance features that are trim- or
@@ -530,13 +551,13 @@ const SPEC_GROUPS = [
       { key: "rangeWltp", label: "Range (WLTP)", unit: "km", better: "high" },
       { key: "batteryUsable", label: "Usable battery", unit: "kWh", better: "high" },
       { key: "batteryType", label: "Battery chemistry", better: null },
-      { key: "architecture", label: "Electrical architecture", better: null },
+      { key: "architecture", label: "Electrical architecture", better: null, hl: "num" },
       { key: "dcMax", label: "Max DC charging", unit: "kW", better: "high" },
       { key: "dcTime", label: "DC 10–80%", unit: "min", better: "low" },
       { key: "acMax", label: "Max AC charging", unit: "kW", better: "high" },
       { key: "efficiency", label: "Efficiency (WLTP)", unit: "kWh/100km", better: "low" },
-      { key: "heatPump", label: "Heat pump", better: null },
-      { key: "v2l", label: "Vehicle-to-load (V2L)", better: null },
+      { key: "heatPump", label: "Heat pump", better: null, hl: "feature" },
+      { key: "v2l", label: "Vehicle-to-load (V2L)", better: null, hl: "feature" },
     ],
   },
   {
@@ -560,8 +581,8 @@ const SPEC_GROUPS = [
     rows: [
       { key: "suspensionFront", label: "Front suspension", better: null },
       { key: "suspensionRear", label: "Rear suspension", better: null },
-      { key: "adaptiveDamping", label: "Adaptive damping", better: null },
-      { key: "airSuspension", label: "Air suspension", better: null },
+      { key: "adaptiveDamping", label: "Adaptive damping", better: null, hl: "feature" },
+      { key: "airSuspension", label: "Air suspension", better: null, hl: "feature" },
     ],
   },
   {
@@ -569,44 +590,44 @@ const SPEC_GROUPS = [
     rows: [
       { key: "seatMaterial", label: "Seat material", better: null },
       { key: "seatComfort", label: "Front seats (heat/vent/massage)", better: null },
-      { key: "rearSeatHeat", label: "Rear seat heating", better: null },
-      { key: "rearSeatVent", label: "Rear seat ventilation", better: null },
-      { key: "steeringHeat", label: "Heated steering wheel", better: null },
-      { key: "wirelessCharge", label: "Wireless phone charging", better: null },
+      { key: "rearSeatHeat", label: "Rear seat heating", better: null, hl: "feature" },
+      { key: "rearSeatVent", label: "Rear seat ventilation", better: null, hl: "feature" },
+      { key: "steeringHeat", label: "Heated steering wheel", better: null, hl: "feature" },
+      { key: "wirelessCharge", label: "Wireless phone charging", better: null, hl: "feature" },
       { key: "doorHandles", label: "Door handles", better: null },
-      { key: "ambient", label: "Ambient lighting", better: null },
+      { key: "ambient", label: "Ambient lighting", better: null, hl: "feature" },
       { key: "roof", label: "Roof", better: null },
     ],
   },
   {
     title: "Infotainment",
     rows: [
-      { key: "display", label: "Central display", better: null },
+      { key: "display", label: "Central display", better: null, hl: "num" },
       { key: "cluster", label: "Driver display", better: null },
-      { key: "headUp", label: "Head-up display", better: null },
-      { key: "audio", label: "Audio system", better: null },
+      { key: "headUp", label: "Head-up display", better: null, hl: "feature" },
+      { key: "audio", label: "Audio system", better: null, hl: "num" },
     ],
   },
   {
     title: "Safety & Driver Assistance",
     rows: [
-      { key: "ncap", label: "Safety rating (NCAP)", better: null },
-      { key: "airbags", label: "Airbags", better: null },
-      { key: "aeb", label: "Autonomous emergency braking", better: null },
-      { key: "adaptiveCruise", label: "Adaptive cruise control", better: null },
-      { key: "laneKeep", label: "Lane-keep assist", better: null },
-      { key: "blindSpot", label: "Blind-spot monitoring", better: null },
-      { key: "camera360", label: "360° camera", better: null },
-      { key: "parkAssist", label: "Parking assist", better: null },
-      { key: "driverMonitor", label: "Driver attention monitor", better: null },
+      { key: "ncap", label: "Safety rating (NCAP)", better: null, hl: "num" },
+      { key: "airbags", label: "Airbags", better: null, hl: "num" },
+      { key: "aeb", label: "Autonomous emergency braking", better: null, hl: "feature" },
+      { key: "adaptiveCruise", label: "Adaptive cruise control", better: null, hl: "feature" },
+      { key: "laneKeep", label: "Lane-keep assist", better: null, hl: "feature" },
+      { key: "blindSpot", label: "Blind-spot monitoring", better: null, hl: "feature" },
+      { key: "camera360", label: "360° camera", better: null, hl: "feature" },
+      { key: "parkAssist", label: "Parking assist", better: null, hl: "feature" },
+      { key: "driverMonitor", label: "Driver attention monitor", better: null, hl: "feature" },
       { key: "adas", label: "Driver-assist suite", better: null },
     ],
   },
   {
     title: "Ownership",
     rows: [
-      { key: "warranty", label: "Vehicle warranty", better: null },
-      { key: "batteryWarranty", label: "Battery warranty", better: null },
+      { key: "warranty", label: "Vehicle warranty", better: null, hl: "num" },
+      { key: "batteryWarranty", label: "Battery warranty", better: null, hl: "num" },
     ],
   },
 ];
@@ -1292,7 +1313,7 @@ const VEHICLES = [
       steeringHeat: "Optional",
       wirelessCharge: "Yes",
       doorHandles: "Recessed (flush optional)",
-      ambient: "Yes (RGB, optional interior light)",
+      ambient: "Yes (RGB interior light)",
       roof: "Panoramic glass (optional)",
       display: '11.9" + 14.5" curved MMI',
       cluster: '11.9" Audi virtual cockpit',
@@ -1357,6 +1378,52 @@ if (typeof module !== "undefined" && module.exports) {
       return row.unit ? `${num}<span class="unit">${row.unit}</span>` : num;
     }
     return String(value);
+  }
+
+  // Rank a Yes / Standard / Optional / No style value (higher = better).
+  function featureTier(value) {
+    const s = String(value).toLowerCase();
+    if (/\b(no|none)\b/.test(s) || s === "—" || s === "-") return 0;
+    if (/\boptional\b/.test(s)) return 1;
+    if (/\b(yes|standard|included|full)\b/.test(s)) return 2;
+    return null;
+  }
+
+  // Pull the first number out of a string (e.g. "17-speaker" -> 17).
+  function firstNumber(value) {
+    const m = String(value).match(/\d[\d,.]*/);
+    return m ? parseFloat(m[0].replace(/,/g, "")) : null;
+  }
+
+  // Determine which vehicles "win" a row (numeric, feature, or quantity text).
+  function winnersFor(row) {
+    const present = VEHICLES.map((v) => [v.id, v.specs[row.key]]).filter(
+      ([, val]) => val !== null && val !== undefined && val !== ""
+    );
+
+    let scored;
+    if (row.better === "high" || row.better === "low") {
+      scored = present
+        .filter(([, val]) => typeof val === "number")
+        .map(([id, val]) => [id, row.better === "low" ? -val : val]);
+    } else if (row.hl === "feature") {
+      scored = present
+        .map(([id, val]) => [id, featureTier(val)])
+        .filter(([, s]) => s !== null);
+    } else if (row.hl === "num") {
+      scored = present
+        .map(([id, val]) => [id, firstNumber(val)])
+        .filter(([, s]) => s !== null);
+    } else {
+      return new Set();
+    }
+
+    if (scored.length < 2) return new Set();
+    const values = scored.map(([, s]) => s);
+    const max = Math.max(...values);
+    const min = Math.min(...values);
+    if (max === min) return new Set(); // no meaningful winner
+    return new Set(scored.filter(([, s]) => s === max).map(([id]) => id));
   }
 
   function rowValuesDiffer(row) {
@@ -1432,6 +1499,7 @@ if (typeof module !== "undefined" && module.exports) {
       body.appendChild(groupTr);
 
       visibleRows.forEach((row) => {
+        const winners = winnersFor(row);
         const tr = document.createElement("tr");
         const label = document.createElement("td");
         label.className = "row-label";
@@ -1441,6 +1509,7 @@ if (typeof module !== "undefined" && module.exports) {
         VEHICLES.forEach((v) => {
           const td = document.createElement("td");
           td.className = "val";
+          if (winners.has(v.id)) td.classList.add("win");
           td.innerHTML = formatValue(v.specs[row.key], row);
           tr.appendChild(td);
         });
@@ -1454,6 +1523,12 @@ if (typeof module !== "undefined" && module.exports) {
     renderCards();
     renderTableHead();
     renderTableBody();
+
+    const diffToggle = document.getElementById("toggle-diff");
+    const applyHighlight = () =>
+      document.body.classList.toggle("show-diff", diffToggle.checked);
+    diffToggle.addEventListener("change", applyHighlight);
+    applyHighlight(); // honour the default (checked) state on load
 
     document
       .getElementById("toggle-onlydiff")
