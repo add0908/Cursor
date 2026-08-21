@@ -573,6 +573,24 @@ const VEHICLES = [
   },
 ];
 
+// Left-to-right display order for the cards and comparison columns.
+// Edit this list to reorder; unknown ids fall back to the front.
+const VEHICLE_ORDER = [
+  "zeekr-7x-base",
+  "zeekr-7x-long-range",
+  "zeekr-7x-performance",
+  "byd-sealion-7-base",
+  "byd-sealion-7-performance",
+  "tesla-model-y-rwd",
+  "tesla-model-y-long-range",
+  "audi-q6-etron-quattro",
+  "bmw-ix1-xdrive30",
+  "mercedes-eqa-250plus",
+];
+VEHICLES.sort(
+  (a, b) => VEHICLE_ORDER.indexOf(a.id) - VEHICLE_ORDER.indexOf(b.id)
+);
+
 if (typeof module !== "undefined" && module.exports) {
   module.exports = { VEHICLES, SPEC_GROUPS, CURRENCY };
 }
