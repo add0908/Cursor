@@ -39,7 +39,7 @@
       <section class="controls" aria-label="Comparison controls">
         <div class="control-group">
           <label class="switch">
-            <input type="checkbox" id="toggle-diff" />
+            <input type="checkbox" id="toggle-diff" checked />
             <span>Highlight best values</span>
           </label>
           <label class="switch">
@@ -72,9 +72,21 @@
             trim names and standard equipment differ by market.
           </li>
           <li>
-            "Best value" highlighting is a simple per-row heuristic (higher power
-            / range is better, lower price / 0–100 time is better) and is not an
-            overall recommendation.
+            "Highlight best values" flags the strongest value in each row using
+            a per-row heuristic for the value it adds: higher power/range wins
+            and lower price/0–100 time wins; "Standard/Yes" beats "Optional"
+            beats "No"; and quality is ranked where there's a sensible order
+            (e.g. Nappa &gt; synthetic &gt; cloth seats; heat+vent+massage &gt;
+            heat+vent &gt; heat; AWD &gt; RWD &gt; FWD; larger displays/audio;
+            flush powered door handles &gt; conventional). It's a rough guide,
+            not an overall recommendation. Rows where every model is equal, or
+            that are just labels with no "better" (segment, trim, battery
+            chemistry), are left unhighlighted.
+          </li>
+          <li>
+            Comfort, safety and assistance features that are trim- or
+            option-dependent are marked "Optional"; equipment and packaging vary
+            by market and model year.
           </li>
           <li>Always confirm current specs and pricing with the manufacturer before purchase.</li>
         </ul>

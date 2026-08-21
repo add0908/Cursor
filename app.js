@@ -21,17 +21,94 @@
     return String(value);
   }
 
-  // Determine which vehicles "win" a numeric row for highlighting.
+  // Rank a Yes / Standard / Optional / No style value (higher = better).
+  function featureTier(value) {
+    const s = String(value).toLowerCase();
+    if (/\b(no|none)\b/.test(s) || s === "—" || s === "-") return 0;
+    if (/\boptional\b/.test(s)) return 1;
+    if (/\b(yes|standard|included|full)\b/.test(s)) return 2;
+    return null;
+  }
+
+  // Pull the first / largest number out of a string ("17-speaker" -> 17).
+  function firstNumber(value) {
+    const m = String(value).match(/\d[\d,.]*/);
+    return m ? parseFloat(m[0].replace(/,/g, "")) : null;
+  }
+  function maxNumber(value) {
+    const m = String(value).match(/\d[\d,.]*/g);
+    if (!m) return null;
+    return Math.max(...m.map((x) => parseFloat(x.replace(/,/g, ""))));
+  }
+
+  // Score a value for "best" highlighting. Higher is better; null = unrankable
+  // (so it won't be highlighted). Ordering reflects the value to the user.
+  function scoreValue(row, value) {
+    if (value === null || value === undefined || value === "") return null;
+
+    if (row.better === "high" || row.better === "low") {
+      if (typeof value !== "number") return null;
+      return row.better === "low" ? -value : value;
+    }
+
+    const s = String(value).toLowerCase();
+    switch (row.hl) {
+      case "feature":
+        return featureTier(value);
+      case "num":
+        return firstNumber(value);
+      case "maxnum":
+        return maxNumber(value);
+      case "material": // Nappa > genuine leather > synthetic > cloth
+        if (/nappa/.test(s)) return 4;
+        if (/textile|cloth|fabric/.test(s)) return 1;
+        if (/synthetic|vegan|artico|sensatec|leatherette|\bpu\b/.test(s)) return 2;
+        if (/leather/.test(s)) return 3;
+        return null;
+      case "comfort": {
+        // More of heat / ventilation / massage is better; optional counts less.
+        let sc = 0;
+        if (/heat/.test(s)) sc += 1;
+        if (/ventilat/.test(s)) sc += 1;
+        if (/massage/.test(s)) sc += 1;
+        if (/optional/.test(s)) sc -= 0.5;
+        return sc > 0 ? sc : null;
+      }
+      case "handles": // powered/flush-auto > flush > conventional
+        if (/powered|e-latch|auto/.test(s)) return 3;
+        if (/conventional|recessed/.test(s)) return 1;
+        if (/flush|pop.?out/.test(s)) return 2;
+        return null;
+      case "roof": // panoramic + sunshade > panoramic > optional
+        if (/optional/.test(s)) return 1;
+        if (/sunshade/.test(s)) return 3;
+        if (/panoramic|glass/.test(s)) return 2;
+        return 0;
+      case "suspension": // multilink / wishbone > strut / torsion
+        if (/wishbone|multi.?link|\d-?link|five-?link/.test(s)) return 3;
+        if (/macpherson|strut|single.?joint|torsion/.test(s)) return 1;
+        return null;
+      case "drive": // AWD > RWD > FWD
+        if (/awd|all.?wheel|quattro|4matic|xdrive/.test(s)) return 3;
+        if (/rwd|rear/.test(s)) return 2;
+        if (/fwd|front/.test(s)) return 1;
+        return null;
+      default:
+        return null;
+    }
+  }
+
+  // Determine which vehicles "win" a row.
   function winnersFor(row) {
-    if (!row.better) return new Set();
-    const entries = VEHICLES.map((v) => [v.id, v.specs[row.key]]).filter(
-      ([, val]) => typeof val === "number"
+    const scored = VEHICLES.map((v) => [v.id, scoreValue(row, v.specs[row.key])]).filter(
+      ([, s]) => s !== null && s !== undefined
     );
-    if (entries.length < 2) return new Set();
-    const values = entries.map(([, val]) => val);
-    const target = row.better === "high" ? Math.max(...values) : Math.min(...values);
-    // A frunk/boot of 0 shouldn't "win" a "high" comparison trivially; still fine.
-    return new Set(entries.filter(([, val]) => val === target).map(([id]) => id));
+    if (scored.length < 2) return new Set();
+    const values = scored.map(([, s]) => s);
+    const max = Math.max(...values);
+    const min = Math.min(...values);
+    if (max === min) return new Set(); // no meaningful winner
+    return new Set(scored.filter(([, s]) => s === max).map(([id]) => id));
   }
 
   function rowValuesDiffer(row) {
@@ -133,9 +210,10 @@
     renderTableBody();
 
     const diffToggle = document.getElementById("toggle-diff");
-    diffToggle.addEventListener("change", () => {
+    const applyHighlight = () =>
       document.body.classList.toggle("show-diff", diffToggle.checked);
-    });
+    diffToggle.addEventListener("change", applyHighlight);
+    applyHighlight(); // honour the default (checked) state on load
 
     document
       .getElementById("toggle-onlydiff")
